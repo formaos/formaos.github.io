@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en" class="lang-en light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forma GNU/Linux — 造形美 / Structural Beauty</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  .light {
+    --bg:#ece6f5;--surface:#ece6f5;--surface-2:#e4ddf0;--line:#d4c8e8;
+    --text:#1a1028;--text-dim:#564a72;--text-faint:#9188ac;
+    --accent:#ff71ce;--accent-2:#01cdfe;--accent-3:#b967ff;--accent-4:#fffb96;
+    --accent-soft:rgba(255,113,206,0.12);--accent2-soft:rgba(1,205,254,0.12);
+    --sd:rgba(140,120,180,0.4);--sl:rgba(255,255,255,0.9);
+    --shadow:6px 6px 14px var(--sd),-6px -6px 14px var(--sl);
+    --shadow-lg:10px 10px 24px var(--sd),-10px -10px 24px var(--sl);
+    --shadow-sm:3px 3px 7px var(--sd),-3px -3px 7px var(--sl);
+    --shadow-in:inset 4px 4px 10px var(--sd),inset -4px -4px 10px var(--sl);
+    --glow:0 0 30px rgba(255,113,206,0.25),0 0 60px rgba(1,205,254,0.15);
+    --code-bg:rgba(184,103,255,0.12);--code-text:#7a1fa8;
+    --aurora-1:rgba(255,113,206,0.15);--aurora-2:rgba(1,205,254,0.15);--aurora-3:rgba(185,103,255,0.1);
+    --wave-fill:var(--surface);
+  }
+  .dark {
+    --bg:#120a1e;--surface:#120a1e;--surface-2:#1a0f2e;--line:#3a2154;
+    --text:#f3ecff;--text-dim:#c9b3e8;--text-faint:#7a6ba0;
+    --accent:#ff71ce;--accent-2:#01cdfe;--accent-3:#b967ff;--accent-4:#fffb96;
+    --accent-soft:rgba(255,113,206,0.14);--accent2-soft:rgba(1,205,254,0.14);
+    --sd:rgba(0,0,0,0.6);--sl:rgba(255,255,255,0.04);
+    --shadow:6px 6px 14px var(--sd),-6px -6px 14px var(--sl);
+    --shadow-lg:10px 10px 24px var(--sd),-10px -10px 24px var(--sl);
+    --shadow-sm:3px 3px 7px var(--sd),-3px -3px 7px var(--sl);
+    --shadow-in:inset 4px 4px 10px var(--sd),inset -4px -4px 10px var(--sl);
+    --glow:0 0 30px rgba(255,113,206,0.3),0 0 60px rgba(1,205,254,0.2);
+    --code-bg:rgba(1,205,254,0.14);--code-text:#7be8ff;
+    --aurora-1:rgba(255,113,206,0.08);--aurora-2:rgba(1,205,254,0.08);--aurora-3:rgba(185,103,255,0.05);
+    --wave-fill:var(--surface);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;transition:background .4s,color .4s}
+  a{color:var(--accent);text-decoration:none}
+  ::selection{background:var(--accent-soft)}
+  ::-webkit-scrollbar{width:8px}
+  ::-webkit-scrollbar-track{background:var(--bg)}
+  ::-webkit-scrollbar-thumb{background:linear-gradient(var(--accent),var(--accent-2));border-radius:4px}
+  code{background:var(--code-bg);color:var(--code-text);padding:2px 7px;border-radius:6px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:.86em;font-weight:600}
+  .wrap{max-width:940px;margin:0 auto;padding:0 28px}
+  html.lang-en .ja{display:none!important}
+  html:not(.lang-en) .en{display:none!important}
+  .mono{font-family:'JetBrains Mono',ui-monospace,monospace}
+
+  /* SCROLL PROGRESS */
+  .scroll-progress{position:fixed;top:0;left:0;height:3px;width:0%;z-index:999;background:linear-gradient(90deg,var(--accent),var(--accent-2),var(--accent-3));transition:width .1s;box-shadow:0 0 10px var(--accent)}
+
+  /* PARTICLES + AURORA */
+  #particleCanvas{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5}
+  .aurora{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+  .aurora::before,.aurora::after{content:"";position:absolute;width:60vw;height:60vw;border-radius:50%;filter:blur(100px);opacity:.6}
+  .aurora::before{background:var(--aurora-1);top:-15%;left:-10%;animation:aur1 18s ease-in-out infinite}
+  .aurora::after{background:var(--aurora-2);bottom:-15%;right:-10%;animation:aur2 22s ease-in-out infinite}
+  .aurora-mid{position:fixed;top:30%;left:50%;width:40vw;height:40vw;border-radius:50%;filter:blur(120px);background:var(--aurora-3);animation:aur3 26s ease-in-out infinite;z-index:0;pointer-events:none}
+  @keyframes aur1{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(25vw,15vh) scale(1.3)}66%{transform:translate(-10vw,25vh) scale(.8)}}
+  @keyframes aur2{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(-20vw,-15vh) scale(1.2)}66%{transform:translate(15vw,-25vh) scale(.9)}}
+  @keyframes aur3{0%,100%{transform:translate(-50%,0) scale(1)}50%{transform:translate(-50%,20vh) scale(1.5)}}
+
+  .site-header,header.hero,section,footer,.splash,.nav-panel,.wave-section{position:relative;z-index:2}
+
+  /* SPLASH */
+  .splash{position:fixed;inset:0;z-index:9998;background:radial-gradient(circle at 50% 40%,#3a1454,var(--bg) 75%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;transition:opacity .6s,visibility .6s;overflow:hidden}
+  .splash.hide{opacity:0;visibility:hidden;pointer-events:none}
+  .splash-grid{position:absolute;left:0;right:0;bottom:0;height:50%;background-image:linear-gradient(rgba(1,205,254,.4) 1px,transparent 1px),linear-gradient(90deg,rgba(255,113,206,.4) 1px,transparent 1px);background-size:40px 40px;transform:perspective(300px) rotateX(60deg);transform-origin:bottom;animation:gridScroll 2s linear infinite}
+  @keyframes gridScroll{to{background-position:0 40px}}
+  .splash-mark{position:relative;z-index:1;width:70px;height:70px;border-radius:20px;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-weight:800;font-size:28px;box-shadow:var(--shadow-lg);animation:logoPulse 1.5s ease-in-out infinite}
+  @keyframes logoPulse{0%,100%{transform:scale(1) rotate(0);box-shadow:var(--shadow-lg)}50%{transform:scale(1.08) rotate(5deg);box-shadow:var(--shadow-lg),var(--glow)}}
+  .splash-title{position:relative;z-index:1;font-weight:900;font-size:clamp(28px,6vw,48px);letter-spacing:-.02em;text-shadow:0 0 20px rgba(255,113,206,.6),0 0 40px rgba(1,205,254,.4);animation:titleSlide .8s ease-out .3s both}
+  @keyframes titleSlide{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+  .splash-sub{position:relative;z-index:1;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--text-faint);animation:titleSlide .8s ease-out .6s both}
+  .splash-bar{position:relative;z-index:1;width:120px;height:3px;border-radius:3px;background:var(--surface);box-shadow:var(--shadow-in);overflow:hidden}
+  .splash-bar::after{content:"";position:absolute;top:0;left:0;height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-2));border-radius:3px;animation:barFill 1.4s ease-out .4s forwards}
+  @keyframes barFill{to{width:100%}}
+
+  /* AESTHETIC ENHANCEMENTS */
+
+
+
+  .vw-chrome{background:linear-gradient(135deg,var(--accent) 0%,var(--accent-2) 50%,var(--accent-3) 100%);background-size:200% 200%;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 8px rgba(255,113,206,.4))}
+  .vw-neon:hover{box-shadow:var(--shadow-lg),0 0 25px rgba(255,113,206,.15),0 0 50px rgba(1,205,254,.08)}
+  .vw-sun-enhanced{position:absolute;top:-80px;left:50%;transform:translateX(-50%);z-index:-1;width:400px;height:400px;border-radius:50%;background:linear-gradient(180deg,#fffb96 0%,#ff71ce 35%,#b967ff 70%,#3a1454 100%);opacity:.3;-webkit-mask-image:repeating-linear-gradient(0deg,black 0px,black 5px,transparent 5px,transparent 10px),linear-gradient(180deg,black 0%,black 50%,transparent 85%);mask-image:repeating-linear-gradient(0deg,black 0px,black 5px,transparent 5px,transparent 10px),linear-gradient(180deg,black 0%,black 50%,transparent 85%);-webkit-mask-composite:source-in;mask-composite:intersect;animation:vwSunPulse 5s ease-in-out infinite}
+  @keyframes vwSunPulse{0%,100%{opacity:.25;filter:blur(1px)}50%{opacity:.4;filter:blur(3px)}}
+  .vw-kana-mega{position:absolute;font-weight:900;font-size:100px;color:transparent;-webkit-text-stroke:1px var(--accent-3);opacity:.04;user-select:none;pointer-events:none;z-index:0;writing-mode:vertical-rl;line-height:1}
+  .vw-badge{display:inline-flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;padding:3px 10px;border-radius:100px;background:linear-gradient(135deg,var(--accent-soft),rgba(1,205,254,.12));color:var(--accent);border:1px solid var(--accent-soft)}
+  .vw-gradient-border{position:relative}
+  .vw-gradient-border::after{content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1px;background:linear-gradient(135deg,var(--accent),var(--accent-2),var(--accent-3));-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;opacity:0;transition:opacity .3s}
+  .vw-gradient-border:hover::after{opacity:.5}
+  .dl-card.vw-neon{box-shadow:var(--shadow-lg),0 0 30px rgba(255,113,206,.12),0 0 60px rgba(1,205,254,.08)}
+  /* END AESTHETIC */
+
+  /* HEADER */
+  .site-header{position:sticky;top:0;z-index:50;background:rgba(236,230,245,.7);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 2px 20px rgba(140,120,180,.15);transition:background .4s}
+  .dark .site-header{background:rgba(18,10,30,.7)}
+  .header-inner{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px max(20px,calc((100vw - 940px) / 2))}
+  .brand{display:flex;align-items:center;gap:11px}
+  .logo-mark{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-weight:800;font-size:15px;flex-shrink:0;transition:transform .6s cubic-bezier(.2,.7,.2,1);box-shadow:var(--shadow-sm)}
+  .logo-mark:hover{transform:rotate(360deg) scale(1.15)}
+  .header-word{font-weight:700;font-size:15px;letter-spacing:-.01em;color:var(--text);line-height:1.25}
+  .header-word .tagline{display:block;font-weight:500;font-size:10px;color:var(--text-faint);letter-spacing:.08em;margin-top:1px;font-family:'JetBrains Mono',monospace}
+  .header-actions{display:flex;align-items:center;gap:8px}
+  .neu-btn{height:36px;border:none;border-radius:11px;background:var(--surface);box-shadow:var(--shadow-sm);cursor:pointer;color:var(--text);transition:box-shadow .2s,color .2s,transform .2s;font-family:'JetBrains Mono',monospace;font-size:12px;display:inline-flex;align-items:center;justify-content:center}
+  .neu-btn:hover{color:var(--accent);transform:translateY(-2px)}
+  .neu-btn:active{box-shadow:var(--shadow-in);transform:translateY(0)}
+  .neu-btn.theme-btn{width:36px;padding:0;font-size:15px}
+  .burger{width:36px;height:36px;border:none;border-radius:11px;background:var(--surface);box-shadow:var(--shadow-sm);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;transition:box-shadow .2s}
+  .burger span{display:block;width:15px;height:2px;border-radius:2px;background:var(--text);transition:transform .3s,opacity .2s}
+  .burger:hover{color:var(--accent)}
+  .burger:active{box-shadow:var(--shadow-in)}
+  .burger[aria-expanded="true"] span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+  .burger[aria-expanded="true"] span:nth-child(2){opacity:0}
+  .burger[aria-expanded="true"] span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+  .nav-panel{position:fixed;top:64px;right:max(20px,calc((100vw - 940px) / 2));width:230px;max-height:0;overflow:hidden;background:var(--surface);border-radius:16px;box-shadow:var(--shadow-lg);transition:max-height .3s cubic-bezier(.2,.7,.2,1),margin-top .3s;z-index:51}
+  .nav-panel.open{max-height:440px;margin-top:8px}
+  .nav-panel ul{list-style:none;padding:6px}
+  .nav-panel a{display:block;padding:11px 12px;border-radius:10px;font-size:13.5px;font-weight:500;color:var(--text);transition:background .2s ease,color .2s ease}
+  .nav-panel a:hover{background:var(--accent-soft);color:var(--accent)}
+  .nav-panel .dl a{color:var(--accent)}
+  .nav-panel .egg a{color:var(--text-faint);font-family:'JetBrains Mono',monospace;font-size:12px}
+
+  /* HERO */
+  header.hero{padding:100px 0 80px;text-align:center;position:relative;overflow:hidden}
+  .hero-grid{position:absolute;left:-10%;right:-10%;bottom:-10px;height:260px;z-index:-1;background-image:linear-gradient(rgba(1,205,254,.3) 1px,transparent 1px),linear-gradient(90deg,rgba(255,113,206,.3) 1px,transparent 1px);background-size:46px 46px;transform:perspective(350px) rotateX(62deg);transform-origin:bottom;-webkit-mask-image:linear-gradient(to top,black,transparent);mask-image:linear-gradient(to top,black,transparent);pointer-events:none;animation:heroGrid 8s linear infinite}
+  @keyframes heroGrid{to{background-position:0 46px}}
+  .hero-sun{position:absolute;top:-80px;left:50%;transform:translateX(-50%);z-index:-1;width:360px;height:360px;border-radius:50%;background:linear-gradient(180deg,#fffb96,var(--accent) 55%,var(--accent-3));filter:blur(2px);opacity:.4;-webkit-mask-image:repeating-linear-gradient(0deg,black 0px,black 6px,transparent 6px,transparent 12px);mask-image:repeating-linear-gradient(0deg,black 0px,black 6px,transparent 6px,transparent 12px);animation:sunPulse 4s ease-in-out infinite}
+  @keyframes sunPulse{0%,100%{opacity:.3;transform:translateX(-50%) scale(1)}50%{opacity:.5;transform:translateX(-50%) scale(1.05)}}
+  .hero-floats{position:absolute;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+  .float-shape{position:absolute;opacity:.15;animation:floatDrift 15s ease-in-out infinite}
+  .float-shape:nth-child(1){top:15%;left:10%;width:60px;height:60px;border-radius:50%;background:var(--accent)}
+  .float-shape:nth-child(2){top:60%;right:12%;width:40px;height:40px;border-radius:12px;background:var(--accent-2);animation-delay:-4s}
+  .float-shape:nth-child(3){top:30%;right:20%;width:80px;height:80px;border-radius:50%;border:3px solid var(--accent-3);background:transparent;animation-delay:-8s}
+  .float-shape:nth-child(4){bottom:15%;left:15%;width:50px;height:50px;transform:rotate(45deg);background:var(--accent-4);opacity:.08;animation-delay:-12s}
+  @keyframes floatDrift{0%,100%{transform:translate(0,0) rotate(0)}33%{transform:translate(30px,-40px) rotate(120deg)}66%{transform:translate(-20px,30px) rotate(240deg)}}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.08em;color:var(--accent);background:var(--accent-soft);padding:7px 16px;border-radius:100px;margin-bottom:28px;box-shadow:var(--shadow-sm);animation:eyebrowSway 4s ease-in-out infinite}
+  @keyframes eyebrowSway{0%,100%{transform:rotate(0)}25%{transform:rotate(-1deg)}75%{transform:rotate(1deg)}}
+  .eyebrow::before{content:"●";font-size:8px}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+  h1.title{font-weight:900;font-size:clamp(40px,7.5vw,72px);line-height:1.02;letter-spacing:-.035em;margin:0 0 18px;filter:drop-shadow(0 0 25px rgba(255,113,206,.2));animation:titleFloat 5s ease-in-out infinite}
+  @keyframes titleFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+  h1.title .brandname{background:linear-gradient(135deg,var(--accent),var(--accent-2),var(--accent-3));-webkit-background-clip:text;background-clip:text;color:transparent}
+  @keyframes gradShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  h1.title .sub{display:block;font-weight:600;font-size:.3em;color:var(--text-faint);letter-spacing:.04em;margin-top:14px;font-family:'JetBrains Mono',monospace;text-transform:uppercase}
+  .hero-desc{max-width:580px;margin:0 auto;color:var(--text-dim);font-size:17.5px}
+  .vw-kana{position:absolute;top:100px;z-index:-1;writing-mode:vertical-rl;font-weight:800;font-size:16px;letter-spacing:12px;color:transparent;-webkit-text-stroke:1px var(--accent-3);opacity:.4;user-select:none;animation:kanaFloat 6s ease-in-out infinite}
+  .vw-kana.left{left:4%}
+  .vw-kana.right{right:4%;animation-delay:-3s}
+  @keyframes kanaFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}
+  @media(max-width:800px){.vw-kana{display:none}}
+  .hero-actions{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:38px}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:14px 26px;border-radius:14px;font-weight:700;font-size:15px;transition:transform .25s cubic-bezier(.2,.7,.2,1),box-shadow .25s;cursor:pointer;border:none;position:relative;overflow:hidden}
+  .btn:hover{transform:translateY(-4px) scale(1.03)}
+  .btn:active{transform:translateY(0) scale(.97)}
+  .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;box-shadow:var(--shadow)}
+  .btn-primary::after{content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent);transition:left .6s}
+  .btn-primary:hover::after{left:100%}
+  .btn-primary:hover{box-shadow:var(--shadow-lg),var(--glow)}
+  .btn-ghost{background:var(--surface);color:var(--text);box-shadow:var(--shadow)}
+  .btn-ghost:hover{color:var(--accent)}
+  .ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.5);pointer-events:none;animation:rippleExp .6s ease-out forwards}
+  @keyframes rippleExp{from{transform:scale(0);opacity:.6}to{transform:scale(4);opacity:0}}
+
+  /* MARQUEE */
+  .marquee{overflow:hidden;white-space:nowrap;padding:18px 0;background:var(--surface);box-shadow:var(--shadow-in)}
+  .marquee-track{display:inline-flex;gap:40px;animation:marqueeScroll 30s linear infinite}
+  .marquee:hover .marquee-track{animation-play-state:paused}
+  .marquee span{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:var(--text-faint);letter-spacing:.1em;text-transform:uppercase}
+  .marquee span::after{content:" ✦ ";color:var(--accent)}
+  @keyframes marqueeScroll{to{transform:translateX(-50%)}}
+
+  /* SECTIONS */
+  section{padding:80px 0}
+  .label{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;font-weight:700}
+  @keyframes labelSway{0%,100%{transform:translateX(0)}50%{transform:translateX(6px)}}
+  h2.h{font-weight:900;font-size:clamp(24px,3.5vw,34px);letter-spacing:-.025em;margin:0 0 18px}
+  @keyframes hSway{0%,100%{transform:translateX(0) rotate(0)}33%{transform:translateX(-3px) rotate(-.3deg)}66%{transform:translateX(3px) rotate(.3deg)}}
+  .lede{color:var(--text-dim);max-width:620px;font-size:16px;margin-bottom:40px}
+
+  /* REVEAL */
+  .reveal{opacity:0;transform:translateY(30px);transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1)}
+  .reveal.visible{opacity:1;transform:translateY(0)}
+  .reveal-stagger>*{opacity:0;transform:translateY(25px) scale(.96);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+  .reveal-stagger.visible>*{opacity:1;transform:translateY(0) scale(1)}
+  .reveal-stagger.visible>*:nth-child(1){transition-delay:0ms}
+  .reveal-stagger.visible>*:nth-child(2){transition-delay:100ms}
+  .reveal-stagger.visible>*:nth-child(3){transition-delay:200ms}
+  .reveal-stagger.visible>*:nth-child(4){transition-delay:300ms}
+  .reveal-stagger.visible>*:nth-child(5){transition-delay:400ms}
+  .reveal-stagger.visible>*:nth-child(6){transition-delay:500ms}
+
+  /* WAVE DIVIDERS */
+  .wave-divider{position:relative;z-index:2;width:100%;overflow:hidden;line-height:0}
+  .wave-divider svg{display:block;width:100%;height:60px}
+  .wave-divider.flip svg{transform:rotate(180deg)}
+
+  /* 3D TILT CARDS */
+  .feat-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;perspective:1000px}
+  .feat-card{background:var(--surface);border:none;border-radius:20px;padding:28px;box-shadow:var(--shadow);transition:transform .4s cubic-bezier(.2,.7,.2,1),box-shadow .4s;position:relative;overflow:hidden;transform-style:preserve-3d;will-change:transform;animation:cardSway 7s ease-in-out infinite}
+  .feat-card:nth-child(2){animation-delay:-2s}
+  .feat-card:nth-child(3){animation-delay:-4s}
+  .feat-card:nth-child(4){animation-delay:-6s}
+  @keyframes cardSway{0%,100%{transform:translateY(0) rotate(0)}25%{transform:translateY(-3px) rotate(.3deg)}75%{transform:translateY(3px) rotate(-.3deg)}}
+  .feat-card::before{content:"";position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent-2));transform:scaleX(0);transform-origin:left;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+  .feat-card::after{content:"";position:absolute;inset:0;border-radius:20px;background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(255,113,206,.08),transparent 50%);opacity:0;transition:opacity .3s;pointer-events:none}
+  .feat-card:hover{animation:none;box-shadow:var(--shadow-lg)}
+  .feat-card:hover::before{transform:scaleX(1)}
+  .feat-card:hover::after{opacity:1}
+  .feat-icon{width:46px;height:46px;border-radius:14px;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:18px;transition:transform .4s;transform:translateZ(20px);animation:iconWobble 3s ease-in-out infinite}
+  @keyframes iconWobble{0%,100%{transform:translateZ(20px) rotate(0)}50%{transform:translateZ(20px) rotate(-5deg)}}
+  .feat-card:hover .feat-icon{animation:none;transform:translateZ(40px) scale(1.1) rotate(-8deg)}
+  .feat-card h3{font-size:16px;font-weight:700;margin:0 0 8px;letter-spacing:-.01em;transform:translateZ(15px)}
+  .feat-card p{color:var(--text-dim);font-size:14px;margin:0;transform:translateZ(10px)}
+  @media(max-width:640px){.feat-grid{grid-template-columns:1fr}}
+
+  /* EDITIONS */
+  .editions-band{background:linear-gradient(180deg,var(--accent-soft),transparent 60%)}
+  .editions-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+  .ed-card{background:var(--surface);border:none;border-radius:16px;padding:24px;box-shadow:var(--shadow);transition:transform .35s,box-shadow .35s;position:relative;overflow:hidden;animation:edSway 5s ease-in-out infinite}
+  .ed-card:nth-child(2){animation-delay:-1s}
+  .ed-card:nth-child(3){animation-delay:-2s}
+  .ed-card:nth-child(4){animation-delay:-3s}
+  .ed-card:nth-child(5){animation-delay:-4s}
+  @keyframes edSway{0%,100%{transform:translateY(0) rotate(0)}33%{transform:translateY(-4px) rotate(.5deg)}66%{transform:translateY(4px) rotate(-.5deg)}}
+  .ed-card::after{content:"";position:absolute;bottom:0;left:0;width:100%;height:0%;background:linear-gradient(180deg,transparent,var(--accent-soft));transition:height .4s}
+  .ed-card:hover{animation:none;transform:translateY(-6px) rotate(-1deg);box-shadow:var(--shadow-lg)}
+  .ed-card:hover::after{height:100%}
+  .ed-card.joke{animation:garbageShake .4s steps(1) infinite}
+  @keyframes garbageShake{0%{transform:translate(0)}5%{transform:translate(-6px,3px) rotate(-3deg) scale(.98)}10%{transform:translate(5px,-4px) rotate(3deg) scale(1.02)}15%{transform:translate(-4px,5px) rotate(-2deg) scale(.99)}20%{transform:translate(6px,-3px) rotate(2deg) scale(1.01)}25%{transform:translate(-5px,4px) rotate(-3deg) scale(.98)}30%{transform:translate(4px,-5px) rotate(3deg) scale(1.02)}35%{transform:translate(-6px,2px) rotate(-2deg) scale(.99)}40%{transform:translate(5px,5px) rotate(2deg) scale(1.01)}45%{transform:translate(-3px,-4px) rotate(-3deg) scale(.98)}50%{transform:translate(6px,3px) rotate(3deg) scale(1.02)}55%{transform:translate(-5px,-3px) rotate(-2deg) scale(.99)}60%{transform:translate(4px,5px) rotate(2deg) scale(1.01)}65%{transform:translate(-6px,4px) rotate(-3deg) scale(.98)}70%{transform:translate(3px,-5px) rotate(3deg) scale(1.02)}75%{transform:translate(-4px,3px) rotate(-2deg) scale(.99)}80%{transform:translate(5px,-3px) rotate(2deg) scale(1.01)}85%{transform:translate(-5px,4px) rotate(-3deg) scale(.98)}90%{transform:translate(4px,-4px) rotate(3deg) scale(1.02)}95%{transform:translate(-3px,2px) rotate(-1deg) scale(.99)}}
+  .ed-card.joke:hover{animation:none}
+  .ed-card .e-name{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:15px;color:var(--accent);margin-bottom:10px;position:relative;z-index:1}
+  .ed-card.joke .e-name{color:var(--text-faint)}
+  .ed-card p{color:var(--text-dim);font-size:13.5px;margin:0;position:relative;z-index:1}
+
+  /* REQUIREMENTS */
+  .req-toggle-wrap{display:flex;gap:12px;margin-bottom:28px}
+  .req-toggle{padding:11px 24px;border-radius:13px;border:none;background:var(--surface);box-shadow:var(--shadow-sm);font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:var(--text-dim);cursor:pointer;transition:box-shadow .2s,color .2s,transform .2s}
+  .req-toggle.active{color:var(--accent);box-shadow:var(--shadow-in);transform:scale(.96)}
+  .req-toggle:hover{color:var(--accent)}
+  .req-table-wrap{display:none;animation:fadeIn .4s ease}
+  .req-table-wrap.active{display:block}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+  .req-table{width:100%;border-collapse:separate;border-spacing:0;font-size:13px;background:var(--surface);border-radius:20px;box-shadow:var(--shadow);overflow:hidden}
+  .req-table th,.req-table td{padding:14px 10px;text-align:center}
+  .req-table thead th{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--text-faint);font-weight:600;border-bottom:1px solid var(--line);background:var(--surface-2)}
+  .req-table tbody tr{transition:background .2s}
+  .req-table tbody tr:hover{background:var(--accent-soft)}
+  .req-table tbody td:first-child{text-align:left;font-weight:700;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:12.5px;padding-left:20px}
+  .req-table tbody td{color:var(--text-dim)}
+  .req-table .na{color:var(--text-faint);font-style:italic}
+  .req-note{background:var(--surface);border-radius:20px;padding:26px 30px;box-shadow:var(--shadow-in);margin-top:22px;font-size:14px;line-height:1.8;color:var(--text-dim)}
+  .req-note .note-label{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-2);margin-bottom:10px;display:block}
+  @media(max-width:700px){.req-table{font-size:11px}.req-table th,.req-table td{padding:8px 4px}}
+
+  /* STATUS */
+  .status-section{display:flex;gap:50px;flex-wrap:wrap}
+  .status-col{flex:1;min-width:260px}
+  .status-col h3{font-size:14px;font-weight:700;margin:0 0 16px;font-family:'JetBrains Mono',monospace}
+  .status-col.dev h3{color:var(--accent-2)}
+  .status-col.done h3{color:var(--text-faint)}
+  .status-chips{display:flex;flex-wrap:wrap;gap:10px}
+  .status-chip{display:flex;align-items:center;gap:8px;background:var(--surface);box-shadow:var(--shadow-sm);border-radius:100px;padding:10px 16px;font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--text-dim);transition:transform .3s,box-shadow .3s;animation:chipBob 4s ease-in-out infinite}
+  .status-chip:nth-child(2){animation-delay:-.5s}
+  .status-chip:nth-child(3){animation-delay:-1s}
+  .status-chip:nth-child(4){animation-delay:-1.5s}
+  .status-chip:nth-child(5){animation-delay:-2s}
+  .status-chip:nth-child(6){animation-delay:-2.5s}
+  @keyframes chipBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+  .status-chip:hover{animation:none;transform:translateY(-3px) scale(1.08);box-shadow:var(--shadow)}
+  .status-chip::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--accent-2)}
+  @keyframes chipPulse{0%,100%{opacity:1;box-shadow:0 0 0 0 var(--accent-2)}50%{opacity:.6;box-shadow:0 0 0 5px transparent}}
+  .status-col.done .status-chip::before{background:var(--text-faint);animation:none}
+  .status-col.done .status-chip{text-decoration:line-through;opacity:.5;animation:none}
+
+  /* GOAL */
+  .goal-card{background:var(--surface);border:none;border-radius:20px;padding:40px;box-shadow:var(--shadow-in);font-size:17px;line-height:1.9;color:var(--text);max-width:740px;position:relative;overflow:hidden;animation:goalBreathe 8s ease-in-out infinite}
+  @keyframes goalBreathe{0%,100%{transform:scale(1)}50%{transform:scale(1.005)}}
+  .goal-card::before{content:"";position:absolute;top:0;left:0;width:4px;height:100%;background:linear-gradient(180deg,var(--accent),var(--accent-2));border-radius:4px;animation:goalBarGlow 3s ease-in-out infinite}
+  @keyframes goalBarGlow{0%,100%{box-shadow:0 0 5px var(--accent)}50%{box-shadow:0 0 20px var(--accent)}}
+  .goal-card em{color:var(--accent);font-style:normal;font-weight:700;position:relative}
+  .goal-card em::after{content:"";position:absolute;bottom:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent-2));border-radius:2px;animation:underlineGrow .8s ease-out}
+  @keyframes underlineGrow{from{transform:scaleX(0);transform-origin:left}to{transform:scaleX(1);transform-origin:left}}
+
+  /* DOWNLOAD */
+  .dl-card{background:linear-gradient(135deg,#2a0a45,#12233f 55%,#3a0a45);border:1px solid rgba(1,205,254,.3);border-radius:20px;padding:44px;box-shadow:var(--shadow-lg),0 0 0 1px rgba(255,113,206,.1) inset;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:24px;color:#fff;position:relative;overflow:hidden;animation:dlBreathe 6s ease-in-out infinite}
+  @keyframes dlBreathe{0%,100%{transform:scale(1)}50%{transform:scale(1.01)}}
+  .dl-card::before{content:"";position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(255,113,206,.1),transparent 50%);animation:dlGlow 6s ease-in-out infinite}
+  @keyframes dlGlow{0%,100%{transform:translate(0,0)}50%{transform:translate(20%,10%)}}
+  .dl-card::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.05),transparent);transform:translateX(-100%);animation:dlShine 4s ease-in-out infinite}
+  @keyframes dlShine{0%,100%{transform:translateX(-100%)}50%{transform:translateX(100%)}}
+  .dl-info{font-size:14px;color:rgba(255,255,255,.6);position:relative;z-index:1}
+  .dl-info strong{display:block;color:#fff;font-family:'JetBrains Mono',monospace;font-size:16px;margin-bottom:4px}
+  .dl-btn{display:inline-flex;align-items:center;gap:8px;background:#fff;color:#14141c;font-weight:700;font-size:15px;padding:14px 26px;border-radius:13px;white-space:nowrap;transition:transform .2s;position:relative;z-index:1;overflow:hidden}
+  .dl-btn:hover{transform:translateY(-3px) scale(1.03)}
+
+  /* FOOTER */
+  footer{padding:50px 0 70px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text-faint);text-align:center}
+  .github-link{display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:13px;background:var(--surface);box-shadow:var(--shadow-sm);font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:var(--text);transition:transform .2s,color .2s;margin-top:14px}
+  .github-link:hover{transform:translateY(-3px);color:var(--accent)}
+  .github-link svg{width:20px;height:20px;fill:currentColor}
+
+  /* TETRIS */
+  .tetris-overlay{position:fixed;inset:0;z-index:200;background:rgba(20,20,28,.7);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px}
+  .tetris-overlay[hidden]{display:none}
+  .tetris-panel{background:var(--surface);border-radius:20px;padding:24px;display:flex;flex-direction:column;align-items:center;gap:14px;box-shadow:var(--shadow-lg);max-width:92vw;animation:panelPop .35s cubic-bezier(.2,.7,.2,1)}
+  @keyframes panelPop{from{opacity:0;transform:scale(.9) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
+  .tetris-head{display:flex;align-items:center;justify-content:space-between;width:100%;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--text-dim)}
+  .tetris-head strong{color:var(--text)}
+  .tetris-close{width:30px;height:30px;border-radius:9px;border:none;background:var(--surface);box-shadow:var(--shadow-sm);color:var(--text);cursor:pointer;font-size:16px;transition:color .2s}
+  .tetris-close:hover{color:var(--accent)}
+  #tetrisCanvas{background:#14141c;border-radius:10px;display:block}
+  .tetris-info{display:flex;gap:24px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text-dim)}
+  .tetris-info b{color:var(--text)}
+  .tetris-hint{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-faint);text-align:center;max-width:260px}
+  .tetris-overlay.gameover .tetris-hint{color:var(--accent-2)}
+
+  /* KONAMI */
+  .konami-burst{position:fixed;inset:0;z-index:9000;pointer-events:none;display:none}
+  .konami-burst.show{display:block;animation:konamiFlash 1.5s ease-out forwards}
+  @keyframes konamiFlash{0%{opacity:1;background:radial-gradient(circle,var(--accent),transparent 70%)}100%{opacity:0}}
+  /* === EXTRA ANIMATIONS === */50%{text-shadow:0 0 15px var(--accent),0 0 30px var(--accent-2)}}
+  @keyframes borderDance{0%{background-position:0% 50%}100%{background-position:200% 50%}}
+  @keyframes pulseRing{0%{box-shadow:0 0 0 0 rgba(255,113,206,.3)}70%{box-shadow:0 0 0 12px transparent}100%{box-shadow:0 0 0 0 transparent}}
+  @keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+  @keyframes spin360{to{transform:rotate(360deg)}}
+  @keyframes glitch{0%,100%{transform:translate(0)}20%{transform:translate(-2px,1px)}40%{transform:translate(2px,-1px)}60%{transform:translate(-1px,-1px)}80%{transform:translate(1px,2px)}}
+  @keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+  @keyframes bounceIn{0%{transform:scale(.3) translateY(40px);opacity:0}60%{transform:scale(1.1) translateY(-5px);opacity:1}100%{transform:scale(1) translateY(0);opacity:1}}
+  @keyframes wobble{0%,100%{transform:rotate(0)}25%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}75%{transform:rotate(-1deg)}}
+  @keyframes heartbeat{0%,100%{transform:scale(1)}15%{transform:scale(1.08)}30%{transform:scale(1)}45%{transform:scale(1.05)}60%{transform:scale(1)}}
+
+  /* Apply new animations */
+  .eyebrow{animation:eyebrowSway 4s ease-in-out infinite}
+  .btn-primary{animation:heartbeat 3s ease-in-out infinite}
+  .dl-btn{animation:heartbeat 2.5s ease-in-out infinite}
+  .req-toggle.active{animation:wobble 1.5s ease-in-out infinite}
+  .feat-icon{animation:iconWobble 3s ease-in-out infinite}
+  .logo-mark{animation:spin360 8s linear infinite paused}
+  .logo-mark:hover{animation-play-state:running}
+  .github-link{animation:floatY 4s ease-in-out infinite}
+  
+  
+  .reveal.visible{animation:bounceIn .6s cubic-bezier(.2,.7,.2,1) both}
+  
+  
+  .req-note{animation:floatY 6s ease-in-out infinite}
+  .hero-desc{animation:floatY 5s ease-in-out infinite 1s}
+  .splash-mark{animation:logoPulse 1.5s ease-in-out infinite,spin360 3s linear infinite}
+
+  /* === CRT SCANLINES === */
+  .scanlines{position:fixed;inset:0;z-index:9990;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.06) 0px,rgba(0,0,0,.06) 1px,transparent 1px,transparent 3px);mix-blend-mode:multiply;opacity:.5}
+  .dark .scanlines{background:repeating-linear-gradient(0deg,rgba(0,0,0,.12) 0px,rgba(0,0,0,.12) 1px,transparent 1px,transparent 3px);opacity:.7}
+
+</style>
+</head>
+<body>
+
+<div class="scroll-progress" id="scrollProgress"></div>
+<canvas id="particleCanvas"></canvas>
+<div class="aurora"></div>
+<div class="aurora-mid"></div>
+<div class="konami-burst" id="konamiBurst"></div>
+<div class="scanlines" aria-hidden="true"></div>
+
+<div class="splash" id="splash">
+  <div class="splash-grid"></div>
+  <div class="splash-mark">F</div>
+  <div class="splash-title">Forma GNU/Linux</div>
+  <div class="splash-sub"><span class="ja">造形美</span><span class="en">Structural Beauty</span> <span class="vw-badge">AESTHETIC</span></div>
+  <div class="splash-bar"></div>
+</div>
+
+<div class="site-header">
+    <div class="header-inner">
+      <div class="brand">
+        <div class="logo-mark">F</div>
+        <div class="header-word">Forma GNU/Linux<span class="tagline"><span class="ja">造形美</span><span class="en">Structural Beauty</span></span></div>
+      </div>
+      <div class="header-actions">
+        <button class="neu-btn" id="langBtn" style="padding:0 14px"><span class="ja">EN</span><span class="en">日本語</span></button>
+        <button class="neu-btn theme-btn" id="themeBtn"><span id="themeIcon">🌙</span></button>
+        <button class="burger" id="burgerBtn" aria-expanded="false"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+    <nav class="nav-panel" id="navPanel">
+      <ul>
+        <li><a href="#features"><span class="ja">特徴</span><span class="en">Features</span></a></li>
+        <li><a href="#installer"><span class="ja">インストーラー</span><span class="en">Installer</span></a></li>
+        <li><a href="#editions"><span class="ja">エディション</span><span class="en">Editions</span></a></li>
+        <li><a href="#requirements"><span class="ja">システム要件</span><span class="en">Requirements</span></a></li>
+        <li><a href="#status"><span class="ja">開発中の機能</span><span class="en">In Development</span></a></li>
+        <li><a href="#goal"><span class="ja">プロジェクトの目的</span><span class="en">Project Goals</span></a></li>
+        <li><a href="update/index.html"><span class="ja">更新ログ</span><span class="en">Changelog</span></a></li>
+        <li class="dl"><a href="#download"><span class="ja">ダウンロード</span><span class="en">Download</span></a></li>
+        <li class="egg"><a href="#" id="tetrisNavLink">tetris</a></li>
+      </ul>
+    </nav>
+    </div>
+</div>
+
+<header class="hero">
+  <div class="hero-sun" aria-hidden="true"></div>
+  <div class="hero-grid" aria-hidden="true"></div>
+  <div class="hero-floats" aria-hidden="true">
+    <div class="float-shape"></div><div class="float-shape"></div><div class="float-shape"></div><div class="float-shape"></div>
+  </div>
+  <div class="vw-kana left" aria-hidden="true">フォーマ・リナックス</div>
+  <div class="vw-kana right" aria-hidden="true">造形美・自由・簡素</div>
+  <div class="wrap">
+    <div class="eyebrow reveal">DEBIAN-BASED · BY.SOUP1023</div>
+    <h1 class="title reveal"><span class="brandname" id="scrambleText">Forma</span> <span class="vw-chrome">GNU/Linux</span><span class="sub"><span class="ja">造形美</span><span class="en">Structural Beauty</span></span></h1>
+    <p class="hero-desc reveal">
+      <span class="ja">Forma GNU/Linuxは、「造形美」をコンセプトとしたDebianベースのLinuxディストリビューションです。単に使いやすいだけではなく、ユーザーの手で最大限自由に、最大限簡単に「管理・カスタマイズ」できる環境を目指して開発を進めています。</span>
+      <span class="en">Forma GNU/Linux is a Debian-based Linux distribution built around the concept of "structural beauty." Beyond simply being easy to use, it aims to give users as much freedom as possible to manage and customize their own systems, while keeping those tasks as simple as possible.</span>
+    </p>
+    <div class="hero-actions reveal">
+      <a href="https://github.com/formaos/Forma-gnu-linux/releases/download/Pre-Release1.0-forma1/FormaLinux64bitx64.iso" class="btn btn-primary" data-ripple><span class="ja">ISOをダウンロード</span><span class="en">Download the ISO</span></a>
+      <a href="#features" class="btn btn-ghost" data-ripple><span class="ja">特徴を見る</span><span class="en">See Features</span></a>
+    </div>
+  </div>
+</header>
+
+<div class="wave-divider"><svg viewBox="0 0 1200 60" preserveAspectRatio="none"><path d="M0,30 C200,60 400,0 600,30 C800,60 1000,0 1200,30 L1200,60 L0,60 Z" fill="var(--wave-fill)" /></svg></div>
+
+<div class="marquee">
+  <div class="marquee-track">
+    <span>Debian-Based</span><span>Structural Beauty</span><span>Forma Installer</span><span>forma command</span><span>forma-tui</span><span>Offline Ready</span><span>Tetris Included</span><span>By.soup1023</span><span>AESTHETIC</span><span>ＡＥＳＴＨＥＴＩＣ</span><span>造形美</span>
+    <span>Debian-Based</span><span>Structural Beauty</span><span>Forma Installer</span><span>forma command</span><span>forma-tui</span><span>Offline Ready</span><span>Tetris Included</span><span>By.soup1023</span><span>AESTHETIC</span><span>ＡＥＳＴＨＥＴＩＣ</span><span>造形美</span>
+  </div>
+</div>
+
+<div class="wave-divider flip"><svg viewBox="0 0 1200 60" preserveAspectRatio="none"><path d="M0,30 C200,60 400,0 600,30 C800,60 1000,0 1200,30 L1200,60 L0,60 Z" fill="var(--wave-fill)" /></svg></div>
+
+<section id="features" class="wave-section">
+  <div class="wrap">
+    <div class="label reveal">FEATURES</div>
+    <h2 class="h reveal"><span class="ja">残すものと、手放すもの</span><span class="en">Keep what you need, leave what you don't</span></h2>
+    <p class="lede reveal">
+      <span class="ja">Debianはあらゆるハードウェアをサポートするために、たくさんのカーネルモジュールを同梱しています。Formaはそれを<code>tar.xz</code>としてアーカイブし、必要になればいつでも復元できる仕組みを提供します。</span>
+      <span class="en">Debian bundles a large number of kernel modules to support a wide range of hardware. Forma archives the ones you don't use as <code>tar.xz</code>, so you can restore them any time.</span>
+    </p>
+    <div class="feat-grid reveal-stagger" data-tilt>
+      <div class="feat-card vw-gradient-border"><div class="feat-icon">📦</div><h3><span class="ja">必要なものを選び、不要なものは持たない</span><span class="en">Keep what you need, leave what you don't</span></h3><p><span class="ja">使用しないドライバーを<code>tar.xz</code>でアーカイブし、システム容量を節約。必要になったらいつでも展開して元に戻せます。</span><span class="en">Archive unused drivers as <code>tar.xz</code> to save space, restore them whenever needed.</span></p></div>
+      <div class="feat-card vw-gradient-border"><div class="feat-icon">🌐</div><h3><span class="ja">オフラインを考慮した設計</span><span class="en">Built for offline use</span></h3><p><span class="ja">インターネット環境がなくても基本的なセットアップや利用ができるよう設計。おまけでテトリスも同梱。</span><span class="en">Basic install and everyday use work fine with no internet. Tetris is included, for some reason.</span></p></div>
+      <div class="feat-card vw-gradient-border"><div class="feat-icon">🧰</div><h3><span class="ja">独自コマンド forma / forma-tui</span><span class="en">The forma / forma-tui commands</span></h3><p><span class="ja">ドライバ・パッケージ・カーネルモジュール・システム設定を一元管理する<code>forma</code>コマンド。TUIの<code>forma-tui</code>も開発予定。</span><span class="en">The <code>forma</code> command manages drivers, packages, kernel modules, and settings. <code>forma-tui</code> brings the same to a keyboard-driven TUI.</span></p></div>
+      <div class="feat-card vw-gradient-border"><div class="feat-icon">💿</div><h3><span class="ja">複数のエディション</span><span class="en">Multiple editions</span></h3><p><span class="ja">用途に応じて5つのエディションを用意。</span><span class="en">Five editions — pick the one that fits you.</span></p></div>
+    </div>
+  </div>
+</section>
+
+<div class="wave-divider"><svg viewBox="0 0 1200 60" preserveAspectRatio="none"><path d="M0,30 C300,70 500,-10 600,20 C700,50 900,10 1200,35 L1200,60 L0,60 Z" fill="var(--wave-fill)" /></svg></div>
+
+<section id="installer" class="wave-section">
+  <div class="wrap">
+    <div class="label reveal">INSTALLER</div>
+    <h2 class="h reveal">Forma Installer</h2>
+    <p class="lede reveal"><span class="ja"><strong>Forma Installer</strong>と呼ばれる独自のTUIインストーラーを採用。キーボードだけで直感的に操作できることを目標に開発しています。</span><span class="en">A custom TUI installer called <strong>Forma Installer</strong>. Designed for intuitive keyboard-only operation.</span></p>
+    <div class="feat-grid reveal-stagger" data-tilt>
+      <div class="feat-card vw-gradient-border"><div class="feat-icon">🐍</div><h3><span class="ja">Pythonで開発</span><span class="en">Built with Python</span></h3><p><span class="ja">開発効率や保守性、機能追加のしやすさを重視しPythonを採用。</span><span class="en">Python was chosen for development efficiency and maintainability.</span></p></div>
+      <div class="feat-card vw-gradient-border"><div class="feat-icon">⌨️</div><h3><span class="ja">キーボード操作に特化</span><span class="en">Keyboard-first design</span></h3><p><span class="ja">ディスク選択やユーザー設定など、基本的なインストール作業を分かりやすく。</span><span class="en">Disk selection and user settings — clear and straightforward.</span></p></div>
+    </div>
+  </div>
+</section>
+
+<div class="wave-divider flip"><svg viewBox="0 0 1200 60" preserveAspectRatio="none"><path d="M0,30 C300,70 500,-10 600,20 C700,50 900,10 1200,35 L1200,60 L0,60 Z" fill="var(--wave-fill)" /></svg></div>
+
+<div class="editions-band" id="editions">
+  <div class="wrap">
+    <section style="padding-top:0">
+      <div class="label reveal">EDITIONS</div>
+      <h2 class="h reveal"><span class="ja">用途に合わせて選ぶ</span><span class="en">Choose one for your use case</span></h2>
+      <div class="editions-grid reveal-stagger">
+        <div class="ed-card vw-gradient-border"><div class="e-name">Standard</div><p><span class="ja">一般的なデスクトップ・ノートPC向け。容量と互換性のバランスを重視。</span><span class="en">Balanced build for typical desktops and laptops.</span></p></div>
+        <div class="ed-card vw-gradient-border"><div class="e-name">Desktop</div><p><span class="ja">GUI環境を含む。日常利用を想定、現在開発中。</span><span class="en">Includes a GUI desktop environment. Currently in development.</span></p></div>
+        <div class="ed-card vw-gradient-border"><div class="e-name">Full</div><p><span class="ja">多数のドライバーを収録。サーバーや特殊環境も想定。</span><span class="en">Maximum hardware compatibility, including servers.</span></p></div>
+        <div class="ed-card vw-gradient-border"><div class="e-name">Minimal</div><p><span class="ja">必要最低限のみ。自分で環境を構築したいユーザー向け。</span><span class="en">Only the essentials, for building from scratch.</span></p></div>
+        <div class="ed-card joke"><div class="e-name">Garbage</div><p><span class="ja">開発者の悪ふざけから生まれた、ただのゴミ。</span><span class="en">Born from developer mischief — just garbage.</span></p></div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div class="wave-divider"><svg viewBox="0 0 1200 60" preserveAspectRatio="none"><path d="M0,20 C200,50 400,0 600,30 C800,60 1000,10 1200,40 L1200,60 L0,60 Z" fill="var(--wave-fill)" /></svg></div>
+
+<section id="requirements" class="wave-section">
+  <div class="wrap">
+    <div class="label reveal">SYSTEM REQUIREMENTS</div>
+    <h2 class="h reveal"><span class="ja">システム要件</span><span class="en">System Requirements</span></h2>
+    <p class="lede reveal"><span class="ja"><strong>BIOS</strong>と<strong>UEFI</strong>で要件が異なります。</span><span class="en">Requirements differ between <strong>BIOS</strong> and <strong>UEFI</strong> boot modes.</span></p>
+    <div class="req-toggle-wrap reveal">
+      <button class="req-toggle active" data-target="bios">BIOS</button>
+      <button class="req-toggle" data-target="uefi">UEFI</button>
+    </div>
+    <div class="req-table-wrap active" id="bios">
+      <table class="req-table"><thead><tr><th>Edition</th><th>Min CPU</th><th>Rec CPU</th><th>Min RAM</th><th>Rec RAM</th><th>Min Storage</th><th>Rec Storage</th></tr></thead><tbody>
+      <tr><td>Standard</td><td>1 Core</td><td>2 Cores+</td><td>70 MB+</td><td>128 MB+</td><td>1 GB+</td><td>5 GB+</td></tr>
+      <tr><td>Desktop</td><td>2 Cores+</td><td>4 Cores+</td><td>512 MB+</td><td>1 GB+</td><td>10 GB+</td><td>20 GB+</td></tr>
+      <tr><td>Full</td><td>1 Core</td><td>2 Cores+</td><td>128 MB+</td><td>256 MB+</td><td>1 GB+</td><td>5 GB+</td></tr>
+      <tr><td>Minimal</td><td>1 Core</td><td>2 Cores+</td><td>70 MB+</td><td>128 MB+</td><td>1 GB+</td><td>5 GB+</td></tr>
+      <tr><td>Garbage</td><td>1 Core+</td><td>1 Core+</td><td>10 MB+</td><td>10 MB+</td><td>1 GB+</td><td>5 GB+</td></tr>
+      </tbody></table>
+    </div>
+    <div class="req-table-wrap" id="uefi">
+      <table class="req-table"><thead><tr><th>Edition</th><th>Min CPU</th><th>Rec CPU</th><th>Min RAM</th><th>Rec RAM</th><th>Min Storage</th><th>Rec Storage</th></tr></thead><tbody>
+      <tr><td>Standard</td><td>1 Core</td><td>2 Cores+</td><td>256 MB+</td><td>512 MB+</td><td>1 GB+</td><td>5 GB+</td></tr>
+      <tr><td>Desktop</td><td>2 Cores+</td><td>4 Cores+</td><td>512 MB+</td><td>1 GB+</td><td>10 GB+</td><td>20 GB+</td></tr>
+      <tr><td>Full</td><td>1 Core</td><td>2 Cores+</td><td>256 MB+</td><td>512 MB+</td><td>1 GB+</td><td>5 GB+</td></tr>
+      <tr><td>Minimal</td><td>2 Cores</td><td>2 Cores+</td><td>256 MB+</td><td>512 MB+</td><td>1 GB+</td><td>5 GB+</td></tr>
+      <tr><td>Garbage</td><td class="na">N/A</td><td class="na">N/A</td><td class="na">N/A</td><td class="na">N/A</td><td class="na">N/A</td><td class="na">N/A</td></tr>
+      </tbody></table>
+    </div>
+    <div class="req-note reveal">
+      <span class="note-label">⚠ Note</span>
+      <span class="ja">UEFI環境でBIOSより多くのメモリを必要とする原因は現在不明。ただし256 MB未満のメモリでUEFIを運用するケースは非常に少ないため、実用上大きな問題ではないと考えています。</span>
+      <span class="en">The reason UEFI requires more memory than BIOS is currently unknown. However, running UEFI with less than 256 MB of RAM is extremely rare, so this is not a practical issue.</span>
+    </div>
+  </div>
+</section>
+
+<div class="wave-divider flip"><svg viewBox="0 0 1200 60" preserveAspectRatio="none"><path d="M0,20 C200,50 400,0 600,30 C800,60 1000,10 1200,40 L1200,60 L0,60 Z" fill="var(--wave-fill)" /></svg></div>
+
+<section id="status" class="wave-section">
+  <div class="wrap">
+    <div class="label reveal">IN DEVELOPMENT</div>
+    <h2 class="h reveal"><span class="ja">開発状況</span><span class="en">Development Status</span></h2>
+    <div class="status-section">
+      <div class="status-col dev reveal-stagger">
+        <h3><span class="ja">🚧 開発中</span><span class="en">🚧 In Progress</span></h3>
+        <div class="status-chips">
+          <div class="status-chip"><span class="ja">forma コマンド</span><span class="en">forma command</span></div>
+          <div class="status-chip">forma-tui</div>
+          <div class="status-chip"><span class="ja">パッケージ管理機能</span><span class="en">Package management</span></div>
+          <div class="status-chip"><span class="ja">ハードウェア管理機能</span><span class="en">Hardware management</span></div>
+          <div class="status-chip"><span class="ja">インストーラー</span><span class="en">Installer</span></div>
+          <div class="status-chip"><span class="ja">遊び心</span><span class="en">Playfulness</span></div>
+        </div>
+      </div>
+      <div class="status-col done reveal">
+        <h3><span class="ja">✅ 開発終了</span><span class="en">✅ Completed</span></h3>
+        <div class="status-chips"><div class="status-chip">init</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wave-divider"><svg viewBox="0 0 1200 60" preserveAspectRatio="none"><path d="M0,25 C150,55 350,5 600,25 C850,45 1050,15 1200,30 L1200,60 L0,60 Z" fill="var(--wave-fill)" /></svg></div>
+
+<section id="goal" class="wave-section">
+  <div class="wrap">
+    <div class="label reveal">PROJECT GOALS</div>
+    <h2 class="h reveal"><span class="ja">プロジェクトの目的</span><span class="en">What we're building toward</span></h2>
+    <div class="goal-card reveal">
+      <span class="ja">Forma GNU/Linuxの目的は、最初から全部入りのLinuxを作ることではありません。必要なものを自分で選び、不要なものは持たない。そして、Linuxの仕組みをほんの少しでも理解しながら、自分だけの環境を構築できることを大切にしています。初心者から上級者まで、それぞれの知識や用途に合わせて<em>自由にカスタマイズ</em>できるディストリビューションを目指しています。</span>
+      <span class="en">Forma GNU/Linux isn't trying to be all-in-one. Choose what you need, let go of what you don't, and build your own environment while <em>understanding the basics</em> of how Linux works — that's the shape of this distribution.</span>
+    </div>
+  </div>
+</section>
+
+<div class="wave-divider flip"><svg viewBox="0 0 1200 60" preserveAspectRatio="none"><path d="M0,25 C150,55 350,5 600,25 C850,45 1050,15 1200,30 L1200,60 L0,60 Z" fill="var(--wave-fill)" /></svg></div>
+
+<section id="download" class="wave-section">
+  <div class="wrap">
+    <div class="label reveal">DOWNLOAD</div>
+    <h2 class="h reveal"><span class="ja">今すぐ試す</span><span class="en">Try it now</span></h2>
+    <div class="dl-card reveal vw-neon vw-gradient-border">
+      <div class="dl-info"><strong>FormaLinux64bitx64.iso</strong>Pre-Release 1.0 · x86_64</div>
+      <a class="dl-btn" data-ripple href="https://github.com/formaos/Forma-gnu-linux/releases/download/Pre-Release1.0-forma1/FormaLinux64bitx64.iso"><span class="ja">ISOをダウンロード</span><span class="en">Download the ISO</span></a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  Forma GNU/Linux — By.soup1023
+  <br>
+  <a href="https://github.com/formaos/Forma-gnu-linux/" class="github-link" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+    GitHub Repository
+  </a>
+</footer>
+
+<div class="tetris-overlay" id="tetrisOverlay" hidden>
+  <div class="tetris-panel">
+    <div class="tetris-head"><strong>tetris</strong><button class="tetris-close" id="tetrisClose">×</button></div>
+    <canvas id="tetrisCanvas" width="200" height="400"></canvas>
+    <div class="tetris-info"><div>SCORE <b id="tetrisScore">0</b></div><div>LINES <b id="tetrisLines">0</b></div></div>
+    <div class="tetris-hint" id="tetrisHint">← → move · ↑ rotate · ↓ soft drop · space hard drop</div>
+  </div>
+</div>
+
+<script>
+// SPLASH
+const splash=document.getElementById('splash');
+document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>splash.classList.add('hide'),1200));
+setTimeout(()=>splash.classList.add('hide'),3000);
+splash.addEventListener('click',()=>splash.classList.add('hide'));
+
+// PARTICLES
+const pC=document.getElementById('particleCanvas'),pX=pC.getContext('2d');
+let parts=[];
+function resizeP(){pC.width=innerWidth;pC.height=innerHeight}
+resizeP();addEventListener('resize',resizeP);
+function initP(){parts=[];const n=Math.min(60,Math.floor(innerWidth/22));for(let i=0;i<n;i++)parts.push({x:Math.random()*pC.width,y:Math.random()*pC.height,vx:(Math.random()-.5)*.4,vy:(Math.random()-.5)*.4,r:Math.random()*2+.5,c:Math.random()>.5?'255,113,206':'1,205,254'})}initP();
+function drawP(){pX.clearRect(0,0,pC.width,pC.height);parts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>pC.width)p.vx*=-1;if(p.y<0||p.y>pC.height)p.vy*=-1;pX.beginPath();pX.arc(p.x,p.y,p.r,0,Math.PI*2);pX.fillStyle=`rgba(${p.c},.4)`;pX.fill()});for(let i=0;i<parts.length;i++)for(let j=i+1;j<parts.length;j++){const dx=parts[i].x-parts[j].x,dy=parts[i].y-parts[j].y,d=Math.sqrt(dx*dx+dy*dy);if(d<130){pX.beginPath();pX.moveTo(parts[i].x,parts[i].y);pX.lineTo(parts[j].x,parts[j].y);pX.strokeStyle=`rgba(255,113,206,${.07*(1-d/130)})`;pX.lineWidth=.5;pX.stroke()}}requestAnimationFrame(drawP)}drawP();
+
+// SCROLL PROGRESS
+const sp=document.getElementById('scrollProgress');
+addEventListener('scroll',()=>{sp.style.width=(scrollY/(document.body.scrollHeight-innerHeight)*100)+'%'});
+
+// TEXT SCRAMBLE
+const scEl=document.getElementById('scrambleText'),scCh='!<>-_\\/[]{}—=+*^?#________',scFin='Forma';
+function scramble(){let it=0;const iv=setInterval(()=>{scEl.textContent=scFin.split('').map((c,i)=>i<it?scFin[i]:scCh[Math.floor(Math.random()*scCh.length)]).join('');if(it>=scFin.length)clearInterval(iv);it+=1/3},50)}setTimeout(scramble,1200);
+
+// RIPPLE
+document.querySelectorAll('[data-ripple]').forEach(btn=>{
+  btn.addEventListener('click',e=>{
+    const r=document.createElement('span');r.className='ripple';const rect=btn.getBoundingClientRect();const size=Math.max(rect.width,rect.height);r.style.width=r.style.height=size+'px';r.style.left=(e.clientX-rect.left-size/2)+'px';r.style.top=(e.clientY-rect.top-size/2)+'px';btn.appendChild(r);setTimeout(()=>r.remove(),600)
+  })
+});
+
+// 3D TILT
+document.querySelectorAll("[data-tilt] .feat-card").forEach(card=>{
+  card.addEventListener("mouseenter",()=>{card.style.animation="none";card.style.transition="box-shadow .4s"});
+  card.addEventListener("mousemove",e=>{
+    const rect=card.getBoundingClientRect();const x=e.clientX-rect.left,y=e.clientY-rect.top;const cx=rect.width/2,cy=rect.height/2;const rx=((y-cy)/cy*-8),ry=((x-cx)/cx*8);
+    card.style.transform=`perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-4px)`;
+    card.style.setProperty("--mx",(x/rect.width*100)+"%");card.style.setProperty("--my",(y/rect.height*100)+"%")
+  });
+  card.addEventListener("mouseleave",()=>{card.style.transform="";card.style.transition="";card.style.animation=""})
+});
+// PARALLAX
+const heroSun=document.querySelector('.hero-sun'),heroGrid=document.querySelector('.hero-grid'),heroFloats=document.querySelectorAll('.float-shape');
+addEventListener('scroll',()=>{const y=scrollY;if(y<800){if(heroSun)heroSun.style.transform=`translateX(-50%) translateY(${y*.3}px)`;if(heroGrid)heroGrid.style.transform=`perspective(350px) rotateX(62deg) translateY(${y*.2}px)`;heroFloats.forEach((f,i)=>{f.style.transform=`translateY(${y*(.1+i*.05)}px)`})}});
+
+// NAV
+const burger=document.getElementById('burgerBtn'),panel=document.getElementById('navPanel');
+burger.addEventListener('click',()=>{const o=panel.classList.toggle('open');burger.setAttribute('aria-expanded',String(o))});
+panel.querySelectorAll('a').forEach(a=>a.addEventListener('click',e=>{if(a.id==='tetrisNavLink')return;panel.classList.remove('open');burger.setAttribute('aria-expanded','false')}));
+
+// LANG
+const langBtn=document.getElementById('langBtn'),htmlEl=document.documentElement;
+langBtn.addEventListener('click',()=>{const t=!htmlEl.classList.contains('lang-en');htmlEl.classList.toggle('lang-en',t);htmlEl.lang=t?'en':'ja'});
+
+// THEME
+const themeBtn=document.getElementById('themeBtn'),themeIcon=document.getElementById('themeIcon');
+themeBtn.addEventListener('click',()=>{const d=htmlEl.classList.contains('light');htmlEl.classList.toggle('light',!d);htmlEl.classList.toggle('dark',d);themeIcon.textContent=d?'☀️':'🌙'});
+
+// REQ TOGGLE
+document.querySelectorAll('.req-toggle').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.req-toggle').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.req-table-wrap').forEach(w=>w.classList.remove('active'));b.classList.add('active');document.getElementById(b.dataset.target).classList.add('active')}));
+
+// REVEAL
+function setupReveal(){const els=document.querySelectorAll('.reveal:not(.visible),.reveal-stagger:not(.visible)');if('IntersectionObserver'in window){const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target)}}),{threshold:.12,rootMargin:'0px 0px -50px 0px'});els.forEach(el=>io.observe(el))}else els.forEach(el=>el.classList.add('visible'))}setupReveal();
+
+// KONAMI
+const km=['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];let ki=0;
+document.addEventListener('keydown',e=>{if(e.key===km[ki]){ki++;if(ki===km.length){document.getElementById('konamiBurst').classList.add('show');setTimeout(()=>document.getElementById('konamiBurst').classList.remove('show'),1500);initP();ki=0}}else ki=0});
+
+// TETRIS (fixed: ctx for canvas context, px for piece X)
+!function(){
+  const o=document.getElementById('tetrisOverlay'),
+    nl=document.getElementById('tetrisNavLink'),
+    clBtn=document.getElementById('tetrisClose'),
+    cv=document.getElementById('tetrisCanvas'),
+    ctx=cv.getContext('2d'),
+    sE=document.getElementById('tetrisScore'),
+    lE=document.getElementById('tetrisLines'),
+    hE=document.getElementById('tetrisHint');
+  const COLS=10,ROWS=20,CELL=20;
+  const SHAPES={I:[[1,1,1,1]],O:[[1,1],[1,1]],T:[[0,1,0],[1,1,1]],Z:[[1,1,0],[0,1,1]],S:[[0,1,1],[1,1,0]],J:[[1,0,0],[1,1,1]],L:[[0,0,1],[1,1,1]]};
+  const KEYS=Object.keys(SHAPES);
+  let board,piece,px,py,score,lines,dropTimer,dropInterval,gameOver,running;
+
+  function rotate(s){const h=s.length,w=s[0].length,r=[];for(let x=0;x<w;x++){const row=[];for(let y=h-1;y>=0;y--)row.push(s[y][x]);r.push(row)}return r}
+  function newPiece(){return SHAPES[KEYS[Math.floor(Math.random()*KEYS.length)]].map(r=>r.slice())}
+  function collides(s,ox,oy){for(let y=0;y<s.length;y++)for(let x=0;x<s[y].length;x++){if(!s[y][x])continue;const bx=ox+x,by=oy+y;if(bx<0||bx>=COLS||by>=ROWS)return true;if(by>=0&&board[by][bx])return true}return false}
+  function merge(){piece.forEach((r,y)=>r.forEach((v,x)=>{if(v&&py+y>=0)board[py+y][px+x]=1}))}
+  function clearLines(){let c=0;for(let y=ROWS-1;y>=0;y--){if(board[y].every(v=>v)){board.splice(y,1);board.unshift(new Array(COLS).fill(0));c++;y++}}if(c){lines+=c;score+=[0,100,300,500,800][c]||c*200;sE.textContent=score;lE.textContent=lines;dropInterval=Math.max(120,600-lines*15)}}
+  function spawn(){piece=newPiece();px=Math.floor((COLS-piece[0].length)/2);py=-2;if(collides(piece,px,py)){gameOver=true;running=false;hE.textContent='game over — press R to restart';o.classList.add('gameover')}}
+  function drawCell(x,y){ctx.fillStyle='#fff';ctx.fillRect(x*CELL+1,y*CELL+1,CELL-2,CELL-2);ctx.strokeStyle='rgba(0,0,0,.2)';ctx.strokeRect(x*CELL+1,y*CELL+1,CELL-2,CELL-2)}
+  function draw(){ctx.fillStyle='#14141c';ctx.fillRect(0,0,cv.width,cv.height);for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++)if(board[y][x])drawCell(x,y);if(piece)piece.forEach((r,y)=>r.forEach((v,x)=>{if(v&&py+y>=0)drawCell(px+x,py+y)}))}
+  function drop(){if(!running)return;if(!collides(piece,px,py+1))py++;else{merge();clearLines();spawn()}draw()}
+  function hardDrop(){while(!collides(piece,px,py+1))py++;merge();clearLines();spawn();draw()}
+  function loop(){if(!running)return;drop();dropTimer=setTimeout(loop,dropInterval)}
+  function resetGame(){board=Array.from({length:ROWS},()=>new Array(COLS).fill(0));score=0;lines=0;dropInterval=600;gameOver=false;sE.textContent=0;lE.textContent=0;hE.textContent='← → move · ↑ rotate · ↓ soft drop · space hard drop';o.classList.remove('gameover');spawn();draw()}
+  function startGame(){clearTimeout(dropTimer);resetGame();running=true;loop()}
+  function stopGame(){running=false;clearTimeout(dropTimer)}
+
+  nl.addEventListener('click',e=>{e.preventDefault();o.hidden=false;panel.classList.remove('open');burger.setAttribute('aria-expanded','false');startGame()});
+  clBtn.addEventListener('click',()=>{o.hidden=true;stopGame()});
+  o.addEventListener('click',e=>{if(e.target===o){stopGame();o.hidden=true}});
+  document.addEventListener('keydown',e=>{
+    if(o.hidden)return;
+    if(gameOver){if(e.key==='r'||e.key==='R')startGame();return}
+    if(!running)return;
+    switch(e.key){
+      case'ArrowLeft':if(!collides(piece,px-1,py)){px--;draw()}e.preventDefault();break;
+      case'ArrowRight':if(!collides(piece,px+1,py)){px++;draw()}e.preventDefault();break;
+      case'ArrowDown':drop();e.preventDefault();break;
+      case'ArrowUp':{const r=rotate(piece);let nx=px;if(!collides(r,nx,py)){piece=r;draw()}else if(!collides(r,nx-1,py)){piece=r;px--;draw()}else if(!collides(r,nx+1,py)){piece=r;px++;draw()}e.preventDefault();break}
+      case' ':hardDrop();e.preventDefault();break;
+    }
+  });
+}();
+</script>
+</body>
+</html>
