@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en" class="lang-en light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>更新ログ — Forma GNU/Linux</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  .light {
+    --bg: #f1edf9; --surface: #f1edf9; --line: #ded2f0;
+    --text: #201530; --text-dim: #5c4f78; --text-faint: #9184ac;
+    --accent: #ff71ce; --accent-2: #01cdfe; --accent-3: #b967ff;
+    --accent-soft: rgba(255,113,206,0.14);
+    --shadow-d: rgba(150,130,190,0.38); --shadow-l: rgba(255,255,255,0.95);
+    --shadow: 7px 7px 16px var(--shadow-d), -7px -7px 16px var(--shadow-l);
+    --shadow-lg: 10px 10px 22px var(--shadow-d), -10px -10px 22px var(--shadow-l);
+    --shadow-in: inset 5px 5px 12px var(--shadow-d), inset -5px -5px 12px var(--shadow-l);
+    --code-bg: rgba(184,103,255,0.14); --code-text: #7a1fa8;
+    --radius: 20px; --mono: 'JetBrains Mono', ui-monospace, monospace; --sans: 'Inter', system-ui, sans-serif;
+  }
+  .dark {
+    --bg: #170b26; --surface: #170b26; --line: #3a2154;
+    --text: #f3ecff; --text-dim: #c9b3e8; --text-faint: #8f74b8;
+    --accent: #ff71ce; --accent-2: #01cdfe; --accent-3: #b967ff;
+    --accent-soft: rgba(255,113,206,0.16);
+    --shadow-d: rgba(0,0,0,0.55); --shadow-l: rgba(255,255,255,0.05);
+    --shadow: 7px 7px 16px var(--shadow-d), -7px -7px 16px var(--shadow-l);
+    --shadow-lg: 10px 10px 22px var(--shadow-d), -10px -10px 22px var(--shadow-l);
+    --shadow-in: inset 5px 5px 12px var(--shadow-d), inset -5px -5px 12px var(--shadow-l);
+    --code-bg: rgba(1,205,254,0.16); --code-text: #7be8ff;
+    --radius: 20px; --mono: 'JetBrains Mono', ui-monospace, monospace; --sans: 'Inter', system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: var(--sans); line-height: 1.65;
+    -webkit-font-smoothing: antialiased; overflow-x: hidden;
+    
+  }
+  code {
+    background: var(--code-bg); color: var(--code-text);
+    padding: 2px 6px; border-radius: 6px; font-family: var(--mono); font-size: 0.88em; font-weight: 600;
+  }
+  ::selection { background: var(--accent-soft); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  .wrap { max-width: 820px; margin: 0 auto; padding: 0 28px; }
+  html.lang-en .ja { display: none !important; }
+  html:not(.lang-en) .en { display: none !important; }
+  .reveal { opacity: 1; transform: none; }
+  
+
+  /* header */
+  .site-header {
+    position: sticky; top: 0; z-index: 20;
+    background: rgba(241,237,249,0.75);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 2px 12px rgba(150,130,190,0.18);
+  }
+  .dark .site-header { background: rgba(23,11,38,0.75); }
+  .header-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 0; }
+  .brand { display: flex; align-items: center; gap: 11px; text-decoration: none; }
+  .logo-mark {
+    width: 32px; height: 32px; border-radius: 9px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    color: #fff; display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono); font-weight: 800; font-size: 14px; flex-shrink: 0;
+  }
+  .header-word { font-weight: 700; font-size: 15px; letter-spacing: -0.01em; color: var(--text); line-height: 1.25; }
+  .header-word .tagline { display: block; font-weight: 500; font-size: 10px; color: var(--text-faint); letter-spacing: 0.08em; margin-top: 1px; font-family: var(--mono); }
+  .header-actions { display: flex; align-items: center; gap: 8px; }
+  .neu-btn {
+    height: 36px; border: none; border-radius: 11px;
+    background: var(--surface); box-shadow: 4px 4px 9px var(--shadow-d), -4px -4px 9px var(--shadow-l);
+    cursor: pointer; color: var(--text); 
+    font-family: var(--mono); font-size: 12px;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .neu-btn:hover { color: var(--accent); }
+  .neu-btn:active { box-shadow: var(--shadow-in); }
+  .neu-btn.theme-btn { width: 36px; padding: 0; font-size: 15px; }
+  .neu-btn.back-btn { padding: 0 14px; gap: 6px; text-decoration: none; }
+
+  /* hero */
+  header.hero { padding: 70px 0 40px; text-align: center; position: relative; overflow: hidden; }
+  .hero-grid {
+    position: absolute; left: -10%; right: -10%; bottom: -10px; height: 180px; z-index: -1;
+    background-image: linear-gradient(rgba(1,205,254,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(255,113,206,0.3) 1px, transparent 1px);
+    background-size: 44px 44px;
+    transform: perspective(320px) rotateX(62deg); transform-origin: bottom;
+    -webkit-mask-image: linear-gradient(to top, black, transparent);
+    mask-image: linear-gradient(to top, black, transparent); pointer-events: none;
+  }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.08em;
+    color: var(--accent); background: var(--accent-soft);
+    padding: 6px 14px; border-radius: 100px; margin-bottom: 22px;
+  }
+  .eyebrow::before { content: "●"; font-size: 8px; }
+  h1.title {
+    font-weight: 800; font-size: clamp(30px, 5vw, 46px); line-height: 1.1;
+    letter-spacing: -0.03em; margin: 0 0 14px;
+    filter: drop-shadow(0 0 22px rgba(255,113,206,0.25));
+  }
+  h1.title .brandname {
+    background: linear-gradient(135deg, var(--accent), var(--accent-2), var(--accent-3));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .hero-desc { max-width: 520px; margin: 0 auto; color: var(--text-dim); font-size: 15.5px; }
+
+  /* sections */
+  section { padding: 40px 0; }
+  .label {
+    font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 12px; font-weight: 600;
+  }
+
+  /* loading */
+  .loader-wrap { display: flex; flex-direction: column; align-items: center; gap: 18px; padding: 60px 0; }
+  .loader {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: var(--surface);
+    box-shadow: 4px 4px 10px var(--shadow-d), -4px -4px 10px var(--shadow-l);
+    position: relative; 
+  }
+  .loader::after {
+    content: ""; position: absolute; top: 3px; left: 50%;
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent); transform: translateX(-50%);
+  }
+  .loader-text { font-family: var(--mono); font-size: 13px; color: var(--text-faint); }
+
+  /* error */
+  .error-card {
+    background: var(--surface); border-radius: var(--radius); padding: 36px;
+    box-shadow: var(--shadow); text-align: center; max-width: 500px; margin: 0 auto;
+  }
+  .error-card .icon { font-size: 32px; margin-bottom: 14px; }
+  .error-card h3 { font-size: 18px; font-weight: 700; margin: 0 0 8px; }
+  .error-card p { color: var(--text-dim); font-size: 14px; margin: 0 0 20px; }
+  .error-card a {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 10px 20px; border-radius: 12px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    color: #fff; font-weight: 600; font-size: 13.5px; text-decoration: none;
+    
+  }
+  .error-card a:hover { transform: translateY(-2px); }
+
+  /* release cards */
+  .release-list { display: flex; flex-direction: column; gap: 20px; }
+  .release-card {
+    background: var(--surface); border: none;
+    border-radius: var(--radius); padding: 30px;
+    box-shadow: var(--shadow);
+  }
+  .release-card.prerelease { border-left: 3px solid var(--accent-2); }
+  .release-card.latest { border-left: 3px solid var(--accent); }
+  .release-tag-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 6px; }
+  .release-tag { font-family: var(--mono); font-weight: 700; font-size: 18px; color: var(--text); }
+  .release-badge {
+    font-family: var(--mono); font-size: 10px; font-weight: 600;
+    padding: 3px 10px; border-radius: 100px; letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .release-badge.latest { background: var(--accent-soft); color: var(--accent); }
+  .release-badge.prerelease { background: rgba(1,205,254,0.15); color: var(--accent-2); }
+  .release-date { font-family: var(--mono); font-size: 12px; color: var(--text-faint); margin-bottom: 16px; }
+  .release-body {
+    color: var(--text-dim); font-size: 14.5px; line-height: 1.8;
+    white-space: pre-wrap; word-break: break-word;
+  }
+  .release-assets { margin-top: 18px; display: flex; flex-wrap: wrap; gap: 10px; }
+  .asset-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 9px 16px; border-radius: 11px;
+    background: var(--surface);
+    box-shadow: 4px 4px 9px var(--shadow-d), -4px -4px 9px var(--shadow-l);
+    font-family: var(--mono); font-size: 12.5px; font-weight: 600;
+    color: var(--text); text-decoration: none;
+    
+  }
+  .asset-link:hover { transform: translateY(-2px); color: var(--accent); }
+  .asset-size { color: var(--text-faint); font-weight: 400; }
+  .release-source-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    margin-top: 14px; font-family: var(--mono); font-size: 12px;
+    color: var(--accent); text-decoration: none;
+  }
+  .release-source-link:hover { text-decoration: underline; }
+
+  /* footer */
+  footer {
+    padding: 40px 0 50px; font-family: var(--mono); font-size: 12px;
+    color: var(--text-faint); text-align: center;
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+  .github-link {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 11px 20px; border-radius: 12px;
+    background: var(--surface);
+    box-shadow: 4px 4px 9px var(--shadow-d), -4px -4px 9px var(--shadow-l);
+    font-family: var(--mono); font-size: 13px; font-weight: 600;
+    color: var(--text); text-decoration: none;
+     margin-top: 12px;
+  }
+  .github-link:hover { transform: translateY(-2px); color: var(--accent); }
+  .github-link svg { width: 18px; height: 18px; fill: currentColor; }
+</style>
+</head>
+<body>
+
+<div class="site-header">
+  <div class="wrap">
+    <div class="header-inner">
+      <a href="../index.html" class="brand" style="text-decoration:none;">
+        <div class="logo-mark">F</div>
+        <div class="header-word">Forma GNU/Linux<span class="tagline"><span class="ja">造形美</span><span class="en">Structural Beauty</span></span></div>
+      </a>
+      <div class="header-actions">
+        <button class="neu-btn" id="langBtn" style="padding:0 14px;">
+          <span class="ja">EN</span><span class="en">日本語</span>
+        </button>
+        <button class="neu-btn theme-btn" id="themeBtn" aria-label="Toggle dark mode">
+          <span id="themeIcon">🌙</span>
+        </button>
+        <a href="../index.html" class="neu-btn back-btn"><span class="ja">← 戻る</span><span class="en">← Back</span></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="hero-grid" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="eyebrow reveal">CHANGELOG</div>
+    <h1 class="title reveal"><span class="brandname"><span class="ja">更新ログ</span><span class="en">Changelog</span></span></h1>
+    <p class="hero-desc reveal">
+      <span class="ja">GitHub Releasesから自動取得しています。</span>
+      <span class="en">Automatically fetched from GitHub Releases.</span>
+    </p>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <div class="label reveal">RELEASES</div>
+    <div id="releaseContainer">
+      <div class="loader-wrap reveal visible">
+        <div class="loader"></div>
+        <div class="loader-text">
+          <span class="ja">リリース情報を取得中…</span>
+          <span class="en">Fetching releases…</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  Forma GNU/Linux — By.soup1023
+  <br>
+  <a href="https://github.com/formaos/Forma-gnu-linux/" class="github-link" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+    GitHub Repository
+  </a>
+</footer>
+
+<script>
+  // theme toggle
+  const themeBtn = document.getElementById('themeBtn');
+  const themeIcon = document.getElementById('themeIcon');
+  const htmlEl = document.documentElement;
+  themeBtn.addEventListener('click', () => {
+    const toDark = htmlEl.classList.contains('light');
+    htmlEl.classList.toggle('light', !toDark);
+    htmlEl.classList.toggle('dark', toDark);
+    themeIcon.textContent = toDark ? '☀️' : '🌙';
+  });
+
+  // language toggle
+  const langBtn = document.getElementById('langBtn');
+  langBtn.addEventListener('click', () => {
+    const toEnglish = !htmlEl.classList.contains('lang-en');
+    htmlEl.classList.toggle('lang-en', toEnglish);
+    htmlEl.lang = toEnglish ? 'en' : 'ja';
+    // re-render releases to update dynamic text
+    if (window._lastReleases) renderReleases(window._lastReleases);
+  });
+
+  // scroll reveal
+  function setupReveal() { return;
+    const revealEls = document.querySelectorAll('.reveal:not(.visible)');
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) { entry.target.classList.add('visible'); io.unobserve(entry.target); }
+        });
+      }, { threshold: 0.15 });
+      revealEls.forEach(el => io.observe(el));
+    } else { revealEls.forEach(el => el.classList.add('visible')); }
+  }
+  setupReveal();
+
+  // i18n helper
+  function t(ja, en) {
+    return htmlEl.classList.contains('lang-en') ? en : ja;
+  }
+
+  // fetch releases
+  const REPO = 'formaos/Forma-gnu-linux';
+  const API_URL = `https://api.github.com/repos/${REPO}/releases?per_page=30`;
+
+  function formatDate(iso) {
+    const d = new Date(iso);
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+
+  function formatSize(bytes) {
+    if (!bytes) return '';
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1048576) return `${(bytes/1024).toFixed(1)} KB`;
+    return `${(bytes/1048576).toFixed(1)} MB`;
+  }
+
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  function renderReleases(releases) {
+    const container = document.getElementById('releaseContainer');
+
+    if (!releases || releases.length === 0) {
+      container.innerHTML = `
+        <div class="error-card reveal visible">
+          <div class="icon">📭</div>
+          <h3>${t('リリースが見つかりません', 'No releases found')}</h3>
+          <p>${t('まだリリースが公開されていません。', 'No releases have been published yet.')}</p>
+          <a href="https://github.com/formaos/Forma-gnu-linux/releases" target="_blank" rel="noopener">${t('GitHubで確認する →', 'Check on GitHub →')}</a>
+        </div>`;
+      return;
+    }
+
+    const html = releases.map((rel, i) => {
+      const isLatest = i === 0;
+      const isPrerelease = rel.prerelease;
+      const tag = escapeHtml(rel.tag_name || 'Unknown');
+      const name = escapeHtml(rel.name || rel.tag_name || '');
+      const date = formatDate(rel.published_at || rel.created_at);
+      const body = escapeHtml(rel.body || t('(リリースノートはありません)', '(No release notes)'));
+      const badges = [];
+      if (isLatest) badges.push(`<span class="release-badge latest">${t('Latest', 'Latest')}</span>`);
+      if (isPrerelease) badges.push(`<span class="release-badge prerelease">Pre-Release</span>`);
+
+      const assets = (rel.assets || []).map(a => `
+        <a class="asset-link" href="${a.browser_download_url}" download>
+          ⬇ ${escapeHtml(a.name)} <span class="asset-size">${formatSize(a.size)}</span>
+        </a>`).join('');
+
+      const sourceLink = `
+        <a class="release-source-link" href="${rel.html_url}" target="_blank" rel="noopener">
+          ${t('GitHubで確認する →', 'View on GitHub →')}
+        </a>`;
+
+      return `
+        <div class="release-card reveal ${isPrerelease ? 'prerelease' : ''} ${isLatest ? 'latest' : ''}">
+          <div class="release-tag-row">
+            <span class="release-tag">${tag}</span>
+            ${badges.join('')}
+          </div>
+          ${name && name !== tag ? `<div style="font-weight:600;font-size:15px;margin-bottom:4px;color:var(--text);">${name}</div>` : ''}
+          <div class="release-date">📅 ${date}</div>
+          <div class="release-body">${body}</div>
+          ${assets ? `<div class="release-assets">${assets}</div>` : ''}
+          ${sourceLink}
+        </div>`;
+    }).join('');
+
+    container.innerHTML = html;
+    setupReveal();
+  }
+
+  async function fetchReleases() {
+    const container = document.getElementById('releaseContainer');
+    try {
+      const res = await fetch(API_URL, { headers: { 'Accept': 'application/vnd.github+json' } });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const releases = await res.json();
+      window._lastReleases = releases;
+      renderReleases(releases);
+    } catch (err) {
+      container.innerHTML = `
+        <div class="error-card reveal visible">
+          <div class="icon">⚠️</div>
+          <h3>${t('取得に失敗しました', 'Failed to fetch')}</h3>
+          <p>${t('GitHub Releases APIへのアクセス中にエラーが発生しました。', 'An error occurred while accessing the GitHub Releases API.')}<br>${escapeHtml(err.message)}</p>
+          <a href="https://github.com/formaos/Forma-gnu-linux/releases" target="_blank" rel="noopener">${t('GitHubで直接確認する →', 'Check directly on GitHub →')}</a>
+        </div>`;
+    }
+  }
+
+  fetchReleases();
+</script>
+
+</body>
+</html>
